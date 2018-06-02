@@ -1,25 +1,29 @@
-
-let alunos = [
-    {
-        _id:1,
-        nome:'Joao',
-        matricula:'123'
-    },
-    {
-        _id:2,
-        nome:'Pedro',
-        matricula:'234'
-    }
-];
+var Aluno = require('../models/aluno.js');
 
 module.exports.inserirAluno = function(req, res){
-    alunos.push(req.body);
-    res.status(200).send(req.body);
-};
+    let promise = Aluno.create(req.body)
+    promise.then(
+        function(contato){
+            res.status(201).json(contato);
+        },
+        function(erro){
+            res.status(500).json(erro);
+        }
+    );
+}
 
 module.exports.listaAlunos = function(req, res){
-    res.json(alunos);
-};
+    let promise = Aluno.find().exec();
+    promise.then(
+        function(alunos){
+            res.json(alunos);
+        },
+        function(erro){
+            res.status(500).end();
+        }
+    );
+}
+
 module.exports.obterAluno = function(req,res){
     var id = req.params.id;
     var aluno = alunos.find(aluno => (aluno._id==id));
